@@ -1,9 +1,5 @@
-import os
 from glob import glob
-from dotenv import load_dotenv
-
 from langchain_community.document_loaders import TextLoader, PyPDFLoader
-from langchain_core.documents import Document
 from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -31,11 +27,11 @@ class Embedding:
         self._load_documents(data_path, "pdf", PyPDFLoader)
         return self._documents
 
-    def get_embedding_model(self, model="nvidia/llama-3.2-nv-embedqa-1b-v1"):
+    def get_embedding_model(self, model):
         """Retrieve the NVIDIA embedding model."""
         return NVIDIAEmbeddings(model=model)
 
-    def store_vectors(self, index_name):
+    def store_vectors(self, index_name, model):
         """Store document vectors in Pinecone."""
         try:
             text_splitter = RecursiveCharacterTextSplitter(
@@ -44,7 +40,7 @@ class Embedding:
             splits = text_splitter.split_documents(self._documents)
             PineconeVectorStore.from_documents(
                 documents=splits,
-                embedding=self.get_embedding_model(),
+                embedding=self.get_embedding_model(model = model),
                 index_name=index_name,
             )
         except Exception as e:
@@ -52,23 +48,14 @@ class Embedding:
             return False
         return True
 
-    def get_embedding(self, text):
+    def get_embedding(self, text, model):
         """Get embeddings for a given query text."""
-        model = self.get_embedding_model()
+        model = self.get_embedding_model(model=model)
         return model.embed_query(text)
 
-    def get_retriever(self, index_name):
+    def get_retriever(self, index_name, model):
         """Initialize a retriever for a given index name."""
         vector_store = Pinecone.from_existing_index(
-            index_name=index_name, embedding=self.get_embedding_model()
+            index_name=index_name, embedding=self.get_embedding_model(model=model)
         )
         return vector_store.as_retriever(search_kwargs={"k": 10})
-
-
-if __name__ == "__main__":
-    load_dotenv()
-    embedding = Embedding()
-    embedding.load_data("../data")
-    retriever = embedding.get_retriever(index_name="ustc-rag-2048")
-    # os.environ['NVIDIA_API_KEY']
-    # embedding.store_vectors(index_name="ustc-rag-2048")
