@@ -1,7 +1,8 @@
 from utils.embedding import Embedding
+from dotenv import load_dotenv
 
 def perform_embedding(data_path = 'data', chunk_size = 500, chunk_overlap = 50, index_name = None, model = "nvidia/llama-3.2-nv-embedqa-1b-v1"):
-    
+    load_dotenv()
     try:
         embedding = Embedding(chunk_size = chunk_size, chunk_overlap = chunk_overlap)
         embedding.load_data(data_path)
