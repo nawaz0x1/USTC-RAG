@@ -1,0 +1,5 @@
+streamlit==1.36.0
+langchain
+langchain_community
+langchain_pinecone
+langchain_nvidia_ai_endpoints
