@@ -1,4 +1,4 @@
-# USTC-RAG: Retrieval-Augmented Generation for USTC Admissions
+# USTC-RAG: Retrieval-Augmented Generation for USTC Admissions Office
 
 Welcome to **USTC-RAG**, a Retrieval-Augmented Generation (RAG) application powered by Large Language Models (LLMs). This tool is designed to assist the admissions office at the University of Science and Technology of Chittagong (USTC) by providing quick and accurate information to applicants and staff. 
 
